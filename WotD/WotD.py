@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys 
+from win10notification import WindowsBalloonTip
 # Downloads the bing wallpaper of the day 
 # Takes in string directory, int keep
 # Saves image in input directory
@@ -14,7 +15,6 @@ def downloadWallpaper(directory, keep):
 
     url = "http://bing.com"
     browser = webdriver.PhantomJS(executable_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "phantomjs.exe"))
-    #browser.set_window_position(-2000, 0)
     browser.get(url)
     link = None
     while link == None:
@@ -23,7 +23,6 @@ def downloadWallpaper(directory, keep):
         
     browser.quit()
     link = link.split('(')[1][:-1]
-   #link = link.split('"')[1]
 
     image = link.split('/')[-1]
     image = os.path.join(directory, image)
@@ -45,6 +44,13 @@ def downloadWallpaper(directory, keep):
                 for i in range(diff):
                     os.remove(images[-1])
                     images.pop(-1)
+
+            icon = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.ico")
+            balloon = WindowsBalloonTip()
+            balloon.balloon_tip("WotD",
+                                "New wallpaper of the day downloaded!",
+                                icon_path=icon,
+                                duration=4)
         except Exception as e:
             count += 1
             print(e)
